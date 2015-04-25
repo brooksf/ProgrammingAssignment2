@@ -1,15 +1,43 @@
-## Put comments here that give an overall description of what your
-## functions do
-
-## Write a short comment describing this function
-
-makeCacheMatrix <- function(x = matrix()) {
-
-}
+# the functions makeCacheMatrix and cacheSolve are contrived to illustrate
+# how function values are passed/inherited in a lexical scoping scenario
 
 
-## Write a short comment describing this function
+# makeCacheMatrix takes an invertable martix as input and returns a list
+# of functions. these functions are then used to set/get the matrix value
+# and to set/get the inverse matrix value
 
-cacheSolve <- function(x, ...) {
-        ## Return a matrix that is the inverse of 'x'
-}
+makeCacheMatrix <- function(x = matrix()) 
+  {
+  inv <- NULL
+  set <- function(y)
+      {
+      x <<- y
+      inv <<- NULL # if a new matrix is input, inv is reset to 'uncalculated'
+      }
+  get <- function() {x} # retrieve the input matrix
+  setinv <- function(temp) {inv <<- temp} # make temp available outside makeCacheMatrix with the name inv
+  getinv <- function() {inv} # retrieve inverse within makeCacheMatrix
+  
+  list(set=set, get=get, setinv=setinv, getinv=getinv) # the 'returned' value of makeCacheMatrix
+  }
+
+
+# cacheSolve checks if the inverse has been given as input or found in 
+# memory. if not, it computes the inverse and makes that value available
+# via the functions defined within makeCacheMatrix
+
+cacheSolve <- function(x, ...)
+  {
+  inv <- x$getinv() # the *list* from makeCacheMatrix is the input now
+  if(!is.null(inv)) # check: is the inverse already set?
+    {
+    message('getting cached data')
+    return (inv) # if so, return it!
+    }
+  
+  # if the return didn't happen, then this code below will
+  mat <- x$get() # get the matrix originally input into *makeCacheMatrix*
+  inv <- solve(mat, ...) # compute the inverse
+  x$setinv(inv) # update the *list* that was input
+  inv # 'return' the inverse just computed
+  }
