@@ -22,8 +22,8 @@ makeCacheMatrix <- function(x = matrix())
   }
 
 
-# cacheSolve checks if the inverse has been given as input or found in 
-# memory. if not, it computes the inverse and makes that value available
+# cacheSolve first checks if the inverse exists in memory
+# if not, it computes the inverse and makes that value available
 # via the functions defined within makeCacheMatrix
 
 cacheSolve <- function(x, ...)
